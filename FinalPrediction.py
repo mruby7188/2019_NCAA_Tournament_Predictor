@@ -147,12 +147,14 @@ def plot_learning_curve(estimator, title, X, y, ylim = None, cv = None,
 y = train['Result']
 X = train.copy()
 X_Valid = pred.copy()
-X.drop(['Result', 'Season', 'T1_TeamID', 'T2_TeamID', 'T1_Seed', 'T2_Seed'],
+X.drop(['Result', 'Season', 'T1_TeamID', 'T2_TeamID', 'T1_Seed', 'T2_Seed',
+        'T1_kenpom_Rank', 'T2_kenpom_Rank', 'T1_Avg_Rank', 'T2_Avg_Rank'],
        axis = 1, inplace = True)
 
 GameID = pred['GameID']
-X_Valid.drop(['GameID', 'Season', 'T1_TeamID', 'T2_TeamID',
-              'T1_Seed', 'T2_Seed'],
+X_Valid.drop(['GameID', 'Season', 'T1_TeamID', 'T2_TeamID', 'T1_Seed',
+              'T2_Seed', 'T1_kenpom_Rank', 'T2_kenpom_Rank', 'T1_Avg_Rank',
+              'T2_Avg_Rank'],
              axis = 1, inplace = True)
 
 # Select Features and standardize Features
@@ -171,7 +173,7 @@ X_Valid = X_Valid[features]
 
 X_train, X_test, y_train, y_test = train_test_split(X,
                                                     y,
-                                                    test_size=0.25,
+                                                    test_size=0.20,
                                                     random_state=453)
 
 sm = SMOTE(random_state = 536)
