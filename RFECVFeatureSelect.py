@@ -1,3 +1,9 @@
+"""RFECVFeatureSekect.py
+
+Performs Recursive Elimination Feature Selection, to be used in conjunction
+with FinalPrediction.py.
+"""
+
 import pandas as pd
 from sklearn.feature_selection import RFECV
 from sklearn.linear_model import LogisticRegression
@@ -8,6 +14,7 @@ train = pd.read_csv("db1/TeamDataTrain_2019.csv")
 pred = pd.read_csv("db1/TeamDataPred_2019.csv")
 
 class RFECVFeatureSelect:
+
   CV = None
 
   def __init__(self, rfecv_folds = None,
@@ -42,6 +49,7 @@ class RFECVFeatureSelect:
                       min_features_to_select = self.rfecv_min_feat)
 
   def fit(self, X, y):
+    # Fits estimator
     if not self.CV:
       for i in range(2, 11):
         self.cv_scores_[max(abs(cross_val_score(self.logit_,
@@ -57,6 +65,7 @@ class RFECVFeatureSelect:
     self.clf_.fit(X, y)
 
   def transform(self, X):
+    # Returns best variables.
     self.features_ = X.columns[self.clf_.support_]
     dat = X.copy()
     dat = dat[self.features_]
@@ -66,5 +75,6 @@ class RFECVFeatureSelect:
     return dat
 
   def fit_transform(self, X, y):
+    # Fits estimator and returns best variables.
     self.fit(X, y)
     return self.transform(X)

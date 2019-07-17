@@ -1,3 +1,13 @@
+"""FinalPrediction.py
+
+Performs feature elimination and fits a model to make a prediction on the
+validation data using training data.
+
+
+  Usage:
+  python3 FinalPredictions.py 'TrainFileloc.csv' 'ValidationFileloc.csv'
+"""
+
 import sys
 
 import matplotlib.pyplot as plt
@@ -147,6 +157,7 @@ def plot_learning_curve(estimator, title, X, y, ylim = None, cv = None,
 y = train['Result']
 X = train.copy()
 X_Valid = pred.copy()
+
 X.drop(['Result', 'Season', 'T1_TeamID', 'T2_TeamID', 'T1_Seed', 'T2_Seed',
         'T1_kenpom_Rank', 'T2_kenpom_Rank', 'T1_Avg_Rank', 'T2_Avg_Rank'],
        axis = 1, inplace = True)
@@ -161,6 +172,7 @@ X_Valid.drop(['GameID', 'Season', 'T1_TeamID', 'T2_TeamID', 'T1_Seed',
 rfe = fs.RFECVFeatureSelect()
 scaler = StandardScaler()
 
+# Standardize Data
 scaler.fit(X)
 X = pd.DataFrame(scaler.transform(X), columns=X.columns)
 X_Valid = pd.DataFrame(scaler.transform(X_Valid), columns=X.columns)
@@ -184,7 +196,7 @@ X_res, y_res = sm.fit_resample(X, y)
 clf = md.NCAATournament2019Model(folds = 5)
 clf.fit(X_res, y_res)
 
-model1 = clf.model_.best_estimator_
+model1 = clf.get_estimator()
 model1.fit(X_train_res, y_train_res)
 preds = model1.predict(X_test)
 
@@ -219,7 +231,7 @@ out1.to_csv('logit.csv', index=False)
 # rff = md.NCAATournament2019Model(rfc, random_grid, folds = 5)
 # rff.fit(X_res, y_res)
 #
-# model2 = rff.model_.best_estimator_
+# model2 = rff.clf.get_estimator()
 # model2.fit(X_train_res, y_train_res)
 # preds2 = model2.predict(X_test)
 #
@@ -249,7 +261,7 @@ out1.to_csv('logit.csv', index=False)
 #
 # svc = md.NCAATournament2019Model(sv, sv_grid, folds = 5)
 # svc.fit(X_res, y_res)
-# model3 = svc.model_.best_estimator_
+# model3 = svc.clf.get_estimator()
 #
 # model3.fit(X_train_res, y_train_res)
 # preds3 = model3.predict(X_test)
@@ -269,7 +281,7 @@ out1.to_csv('logit.csv', index=False)
 #
 # adac.fit(X_res, y_res)
 #
-# model4 = adac.model_.best_estimator_
+# model4 = adac.clf.get_estimator()
 #
 # model4.fit(X_train_res, y_train_res)
 # preds4 = model4.predict(X_test)
@@ -290,7 +302,7 @@ out1.to_csv('logit.csv', index=False)
 #
 # gbc = md.NCAATournament2019Model(gb, gb_grid, folds = 5)
 # gbc.fit(X_res, y_res)
-# model5 = gbc.model_.best_estimator_
+# model5 = gbc.clf.get_estimator()
 #
 # model5.fit(X_train_res, y_train_res)
 # preds5 = model5.predict(X_test)

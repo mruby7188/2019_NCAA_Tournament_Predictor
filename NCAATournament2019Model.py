@@ -1,3 +1,8 @@
+"""NCAATournament2019Model.py
+
+Builds a Model and forms RandomizedSearchCV to find best model parameters.
+"""
+
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
@@ -24,9 +29,6 @@ class NCAATournament2019Model:
   given data."""
 
   def __init__(self, estimator = logit_, param = param_grid, folds = CV):
-    """Creates a model object with response as object the object and the 
-    remaining variables as the independent variables, excluding any variable 
-    names in exclude."""
     global scaler
     scaler = StandardScaler()
     clf = RandomizedSearchCV(estimator = estimator,
@@ -42,12 +44,15 @@ class NCAATournament2019Model:
     self.CV = folds
 
   def get_CV(self):
+    # Returns number of folds used in building the model.
     return self.CV
 
   def get_estimator(self):
-    return self.model_
+    # Returns estimator used in fitting
+    return self.model_.best_estimator_
 
   def fit(self, X, y):
+    # Returns Fitted estimator to training data
     global scaler
     scaler.fit(X)
     dat = scaler.transform(X)
@@ -56,11 +61,13 @@ class NCAATournament2019Model:
     return self.model_
 
   def predict(self, test):
+    # Returns class predictions
     global scaler
     test = scaler.transform(test.copy())
     return self.model_.predict(test)
 
   def predict_proba(self, test):
+    # Returns classification probabilities
     test = scaler.transform(test.copy())
     return self.model_.predict_proba(test)
 
